@@ -70,22 +70,27 @@ def logout_view(request):
 # Dashboard View - Redirects user based on their role
 @login_required
 def dashboard_view(request):
-    """
-    Displays the appropriate dashboard based on the user's role.
-    - Donors see their posted donations.
-    - NGOs see available donations and their claimed donations.
-    """
-    user_profile = get_object_or_404(UserProfile, user=request.user)
+    try:
+        user_profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        # This handles users without a profile (like the superuser)
+        if request.user.is_superuser:
+            messages.info(request, "Admin users do not have a dashboard. You have been redirected to the admin panel.")
+            return redirect('/admin/') # Redirect superuser to the admin panel
+        else:
+            # Handle other rare cases if needed
+            messages.error(request, "Your user profile is not set up correctly. Please contact support.")
+            return redirect('home')
+
     if user_profile.role == 'donor':
-        # Donor's dashboard: Show all donations they have created
+        # Donor's dashboard logic...
         donations = Donation.objects.filter(donor=request.user).order_by('-created_at')
         return render(request, 'core/donor_dashboard.html', {'donations': donations})
     elif user_profile.role == 'ngo':
-        # NGO's dashboard: Show donations they have claimed
+        # NGO's dashboard logic...
         claimed_donations = Donation.objects.filter(claimed_by=request.user).order_by('-updated_at')
         return render(request, 'core/ngo_dashboard.html', {'claimed_donations': claimed_donations})
     
-    # Fallback redirect if role is not found (should not happen)
     return redirect('home')
 
 # View for Donors to post a new donation
