@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Available Food Donations</h2>
+
+{% for donation in donations %}
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <h5 class="card-title">{{ donation.food_item }}</h5>
+                <p class="card-text">
+                    <strong>Quantity:</strong> {{ donation.quantity }} <br>
+                    <strong>Location:</strong> {{ donation.pickup_location }} <br>
+                    <strong>Posted by:</strong> {{ donation.donor.username }} on {{ donation.created_at|date:"d M Y" }}
+                </p>
+            </div>
+            <div class="col-md-4 d-flex align-items-center justify-content-end">
+                <a href="{% url 'claim_donation' donation.id %}" class="btn btn-success">Claim This Donation</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info">There are currently no available donations. Please check back later.</div>
+{% endfor %}
+
+{% endblock %}
