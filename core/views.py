@@ -33,7 +33,15 @@ def register_view(request):
             messages.error(request, 'Registration failed. Please correct the errors below.')
     else:
         form = UserCreationForm()
-    return render(request, 'core/register.html', {'form': form})
+        # Get the role from the URL's query parameter
+        role_from_url = request.GET.get('role', '') 
+        
+    # Pass the form AND the role to the template
+    context = {
+        'form': form,
+        'selected_role': role_from_url
+    }
+    return render(request, 'core/register.html', context)
 
 # User Login View
 def login_view(request):
