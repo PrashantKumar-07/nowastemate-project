@@ -1,27 +1,30 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Turn Surplus into Support</h1>
-        <p class="fs-4">NoWasteMate connects those with excess food to those who need it most. Join us in the fight against food waste and hunger in our communities.</p>
-        <a href="{% url 'register' %}" class="btn btn-primary btn-lg mt-3">Get Started</a>
-    </div>
-</div>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="card-title text-center">Create an Account</h2>
+            <p class="text-center text-muted">Join as a Donor or an NGO.</p>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                
+                <div class="mb-3">
+                    <label for="role" class="form-label">I am a...</label>
+                    <select class="form-select" name="role" id="role" required>
+                        <option value="" disabled selected>-- Select your role --</option>
+                        <option value="donor">Donor (e.g., Canteen, Restaurant)</option>
+                        <option value="ngo">NGO / Community Shelter</option>
+                    </select>
+                </div>
 
-<div class="row align-items-md-stretch">
-    <div class="col-md-6 mb-4">
-        <div class="h-100 p-5 text-white bg-dark rounded-3 card">
-            <h2>For Donors</h2>
-            <p>Have surplus food from your mess, canteen, or event? Easily list it on our platform and we'll connect you with a verified NGO who can pick it up.</p>
-            <a href="{% url 'register' %}" class="btn btn-outline-light">Register as a Donor</a>
-        </div>
-    </div>
-    <div class="col-md-6 mb-4">
-        <div class="h-100 p-5 bg-light border rounded-3 card">
-            <h2>For NGOs</h2>
-            <p>Looking for food donations to support your community? Register as an NGO to get access to real-time listings of available surplus food in your area.</p>
-             <a href="{% url 'register' %}" class="btn btn-outline-secondary">Register as an NGO</a>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </div>
+            </form>
+            <hr>
+            <p class="text-center">Already have an account? <a href="{% url 'login' %}">Log In</a></p>
         </div>
     </div>
 </div>
