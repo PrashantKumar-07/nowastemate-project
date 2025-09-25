@@ -1,5 +1,4 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
@@ -11,14 +10,34 @@
                     <label for="food_item" class="form-label">Food Item(s)</label>
                     <input type="text" class="form-control" id="food_item" name="food_item" placeholder="e.g., Rice, Dal, Mixed Vegetables" required>
                 </div>
+
+                <!-- NEW: Category Dropdown -->
+                <div class="mb-3">
+                    <label for="category" class="form-label">Food Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="" disabled selected>-- Select a category --</option>
+                        {% for value, display_name in categories %}
+                        <option value="{{ value }}">{{ display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     <label for="quantity" class="form-label">Quantity</label>
                     <input type="text" class="form-control" id="quantity" name="quantity" placeholder="e.g., Approx 15 kg, 25 meals" required>
                 </div>
+                
+                <!-- NEW: Pickup By Datetime Picker -->
+                <div class="mb-3">
+                    <label for="pickup_by" class="form-label">Must be Picked Up Before</label>
+                    <input type="datetime-local" class="form-control" id="pickup_by" name="pickup_by" required>
+                </div>
+
                 <div class="mb-3">
                     <label for="pickup_location" class="form-label">Pickup Address</label>
                     <textarea class="form-control" id="pickup_location" name="pickup_location" rows="3" required></textarea>
                 </div>
+
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Submit Donation</button>
                 </div>

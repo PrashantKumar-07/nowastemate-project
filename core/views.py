@@ -8,9 +8,10 @@ logging in, displaying dashboards, and handling food donations.
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from .models import UserProfile, Donation
 from django.contrib import messages
+from .forms import CustomUserCreationForm  # <-- IMPORT THE NEW FORM
 
 # Home page view
 def home_view(request):
@@ -19,24 +20,24 @@ def home_view(request):
 
 # User Registration View
 def register_view(request):
-    """Handles new user registration."""
+    """Handles new user registration using the custom form."""
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST) # <-- USE THE CUSTOM FORM
         role = request.POST.get('role')
         if form.is_valid() and role in ['donor', 'ngo']:
             user = form.save()
-            # Create a UserProfile linked to the new user
-            UserProfile.objects.create(user=user, role=role)
+            # Get the phone number from the cleaned form data
+            phone_number = form.cleaned_data.get('phone_number')
+            # Create a UserProfile with the role and phone number
+            UserProfile.objects.create(user=user, role=role, phone_number=phone_number)
             messages.success(request, 'Registration successful! Please wait for admin approval.')
             return redirect('login')
         else:
             messages.error(request, 'Registration failed. Please correct the errors below.')
     else:
-        form = UserCreationForm()
-        # Get the role from the URL's query parameter
+        form = CustomUserCreationForm() # <-- USE THE CUSTOM FORM
         role_from_url = request.GET.get('role', '') 
         
-    # Pass the form AND the role to the template
     context = {
         'form': form,
         'selected_role': role_from_url
@@ -53,7 +54,6 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
-                # Check if the user's profile is approved by the admin
                 if hasattr(user, 'userprofile') and user.userprofile.is_approved:
                     login(request, user)
                     messages.info(request, f'Welcome back, {username}!')
@@ -78,24 +78,23 @@ def logout_view(request):
 # Dashboard View - Redirects user based on their role
 @login_required
 def dashboard_view(request):
+    """
+    Displays the appropriate dashboard based on the user's role.
+    """
     try:
         user_profile = request.user.userprofile
     except UserProfile.DoesNotExist:
-        # This handles users without a profile (like the superuser)
         if request.user.is_superuser:
-            messages.info(request, "Admin users do not have a dashboard. You have been redirected to the admin panel.")
-            return redirect('/admin/') # Redirect superuser to the admin panel
+            messages.info(request, "Admin users are redirected to the admin panel.")
+            return redirect('/admin/')
         else:
-            # Handle other rare cases if needed
             messages.error(request, "Your user profile is not set up correctly. Please contact support.")
             return redirect('home')
 
     if user_profile.role == 'donor':
-        # Donor's dashboard logic...
         donations = Donation.objects.filter(donor=request.user).order_by('-created_at')
         return render(request, 'core/donor_dashboard.html', {'donations': donations})
     elif user_profile.role == 'ngo':
-        # NGO's dashboard logic...
         claimed_donations = Donation.objects.filter(claimed_by=request.user).order_by('-updated_at')
         return render(request, 'core/ngo_dashboard.html', {'claimed_donations': claimed_donations})
     
@@ -105,35 +104,36 @@ def dashboard_view(request):
 @login_required
 def post_donation_view(request):
     """Allows authenticated donors to post a new food donation."""
-    # Ensure only users with the 'donor' role can access this page
     if not request.user.userprofile.role == 'donor':
         messages.error(request, "Only donors can post donations.")
         return redirect('dashboard')
 
     if request.method == 'POST':
+        # (Logic for processing the form submission)
         food_item = request.POST.get('food_item')
+        category = request.POST.get('category')
         quantity = request.POST.get('quantity')
+        pickup_by = request.POST.get('pickup_by')
         pickup_location = request.POST.get('pickup_location')
         
-        if food_item and quantity and pickup_location:
+        if food_item and category and quantity and pickup_by and pickup_location:
             Donation.objects.create(
-                donor=request.user,
-                food_item=food_item,
-                quantity=quantity,
-                pickup_location=pickup_location
+                donor=request.user, food_item=food_item, category=category,
+                quantity=quantity, pickup_by=pickup_by, pickup_location=pickup_location
             )
             messages.success(request, 'Your donation has been posted successfully!')
             return redirect('dashboard')
         else:
             messages.error(request, 'Please fill in all fields.')
-
-    return render(request, 'core/post_donation.html')
+    
+    # Pass the category choices to the template for the form dropdown
+    categories = Donation.CATEGORY_CHOICES
+    return render(request, 'core/post_donation.html', {'categories': categories})
 
 # View for NGOs to see all available donations
 @login_required
 def view_donations_view(request):
     """Allows authenticated NGOs to see all available food donations."""
-    # Ensure only users with the 'ngo' role can access this page
     if not request.user.userprofile.role == 'ngo':
         messages.error(request, "Only NGOs can view and claim donations.")
         return redirect('dashboard')
@@ -145,17 +145,32 @@ def view_donations_view(request):
 @login_required
 def claim_donation_view(request, donation_id):
     """Allows an NGO to claim a specific, available donation."""
-    # Ensure only NGOs can claim
     if not request.user.userprofile.role == 'ngo':
         messages.error(request, "Only NGOs can claim donations.")
         return redirect('dashboard')
 
     donation = get_object_or_404(Donation, id=donation_id, status='available')
     
-    # Update the donation status and assign it to the claiming NGO
     donation.claimed_by = request.user
     donation.status = 'claimed'
     donation.save()
     
     messages.success(request, f"You have successfully claimed the donation: '{donation.food_item}'.")
     return redirect('dashboard')
+
+def contact_view(request):
+    """
+    Renders the Contact Us page.
+    For this project, the form is visual only and does not send an email.
+    """
+    if request.method == 'POST':
+        # This is where email sending logic would go in a full production app.
+        # For now, we just show a success message.
+        messages.success(request, "Thank you for your message! We will get back to you soon.")
+        return redirect('contact')
+        
+    return render(request, 'core/contact.html')
+# ======================================================
+#  'CONTACT US' VIEW ENDS HERE
+# ======================================================
+

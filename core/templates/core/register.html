@@ -1,42 +1,29 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card p-4">
-            
-            <!-- Check if a role was passed from the homepage -->
             {% if selected_role %}
                 <h2 class="card-title text-center">Create an Account</h2>
-                
-                <!-- Display the selected role as text, not an editable field -->
                 <h4 class="text-center text-muted mb-4">
                     Registering as: <span class="text-capitalize fw-bold">{{ selected_role }}</span>
                 </h4>
-                
                 <form method="post">
                     {% csrf_token %}
+                    <!-- This form now automatically includes the phone number field -->
                     {{ form.as_p }}
-                    
-                    <!-- This field is INVISIBLE but sends the role with the form -->
                     <input type="hidden" name="role" value="{{ selected_role }}">
-
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-block mt-3">Register</button>
                     </div>
                 </form>
-
             {% else %}
-                <!-- Show this message if someone goes to /register/ directly -->
                 <h2 class="card-title text-center">Invalid Registration Path</h2>
-                <p class="text-center mt-3">
-                    Please start the registration process from our homepage by selecting whether you are a Donor or an NGO.
-                </p>
+                <p class="text-center mt-3">Please start from our homepage by selecting whether you are a Donor or an NGO.</p>
                 <div class="text-center mt-3">
                     <a href="{% url 'home' %}" class="btn btn-primary">Go to Homepage</a>
                 </div>
             {% endif %}
-
             <hr>
             <p class="text-center mb-0">Already have an account? <a href="{% url 'login' %}">Log In</a></p>
         </div>
