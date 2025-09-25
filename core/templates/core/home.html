@@ -1,27 +1,104 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Turn Surplus into Support</h1>
-        <p class="fs-4">NoWasteMate connects those with excess food to those who need it most. Join us in the fight against food waste and hunger in our communities.</p>
-        <a href="#selection-area" class="btn btn-primary btn-lg mt-3">Get Started</a>
+<style>
+    /* Styles specific to the homepage */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1593113589675-74b5c8ca1262?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+        background-size: cover;
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+    }
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+    }
+    .hero-section p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 20px auto;
+    }
+    .selection-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+        transition: all 0.3s ease;
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .selection-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+    .selection-card .icon {
+        font-size: 4rem;
+        color: #28a745; /* Green color */
+        margin-bottom: 20px;
+    }
+    .how-it-works h2, .join-us h2 {
+        font-weight: 700;
+        margin-bottom: 40px;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1>Turn Surplus into Support</h1>
+        <p>NoWasteMate connects those with excess food to those who need it most. Join us in the fight against food waste and hunger in our communities.</p>
     </div>
 </div>
 
-<div class="row align-items-md-stretch" id="selection-area">
-    <div class="col-md-6 mb-4">
-        <div class="h-100 p-5 text-white bg-dark rounded-3 card">
-            <h2>For Donors</h2>
-            <p>Have surplus food from your mess, canteen, or event? Easily list it on our platform and we'll connect you with a verified NGO who can pick it up.</p>
-            <a href="{% url 'register' %}?role=donor" class="btn btn-outline-light">Register as a Donor</a>
+<div class="container my-5">
+    <!-- How It Works Section -->
+    <div class="how-it-works text-center py-5">
+        <h2>How It Works</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="p-3">
+                    <i class="fas fa-bullhorn fa-3x text-primary mb-3"></i>
+                    <h4>1. Post Surplus</h4>
+                    <p>Donors list their available surplus food quickly and easily.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3">
+                    <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                    <h4>2. Find Food</h4>
+                    <p>Verified NGOs browse real-time listings of available donations.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3">
+                    <i class="fas fa-hands-helping fa-3x text-primary mb-3"></i>
+                    <h4>3. Connect & Collect</h4>
+                    <p>NGOs claim donations and arrange for pickup, preventing waste.</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-md-6 mb-4">
-        <div class="h-100 p-5 bg-light border rounded-3 card">
-            <h2>For NGOs</h2>
-            <p>Looking for food donations to support your community? Register as an NGO to get access to real-time listings of available surplus food in your area.</p>
-             <a href="{% url 'register' %}?role=ngo" class="btn btn-outline-secondary">Register as an NGO</a>
+    
+    <!-- Join Us / Registration Selection Section -->
+    <div class="join-us text-center py-5" id="selection-area">
+        <h2>Join Our Mission</h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="selection-card h-100">
+                    <div class="icon"><i class="fas fa-box-open"></i></div>
+                    <h3>For Donors</h3>
+                    <p>Have surplus food from your mess, canteen, or event? List it here and make a difference.</p>
+                    <a href="{% url 'register' %}?role=donor" class="btn btn-primary mt-3">Register as a Donor</a>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="selection-card h-100">
+                    <div class="icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h3>For NGOs</h3>
+                    <p>Looking for donations? Register your organization to get access to surplus food in your area.</p>
+                     <a href="{% url 'register' %}?role=ngo" class="btn btn-primary mt-3">Register as an NGO</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
