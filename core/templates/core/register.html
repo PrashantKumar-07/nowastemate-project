@@ -1,32 +1,195 @@
 {% extends 'core/base.html' %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card p-4">
-            {% if selected_role %}
-                <h2 class="card-title text-center">Create an Account</h2>
-                <h4 class="text-center text-muted mb-4">
-                    Registering as: <span class="text-capitalize fw-bold">{{ selected_role }}</span>
-                </h4>
-                <form method="post">
-                    {% csrf_token %}
-                    <!-- This form now automatically includes the phone number field -->
-                    {{ form.as_p }}
-                    <input type="hidden" name="role" value="{{ selected_role }}">
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-block mt-3">Register</button>
+<style>
+    .register-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .register-visual {
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: white;
+        padding: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 15px 0 0 15px;
+    }
+    .register-visual svg {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+    .register-form-wrapper {
+        padding: 40px;
+    }
+    .form-group-custom {
+        position: relative;
+        margin-bottom: 0.5rem; 
+    }
+    .form-control-custom {
+        height: 50px;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+    .form-control-custom:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+    }
+    .form-icon {
+        position: absolute;
+        top: 15px;
+        left: 1rem;
+        color: #aaa;
+        z-index: 5;
+    }
+    .form-action-icon {
+        position: absolute;
+        top: 15px;
+        right: 1rem;
+        color: #aaa;
+        z-index: 5;
+        cursor: pointer;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.85rem;
+        padding-left: 0.5rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card register-card">
+                <div class="row g-0">
+                    <div class="col-lg-5 register-visual d-none d-lg-flex">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                          <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                              <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                              <stop offset="100%" style="stop-color:#f0f0f0;stop-opacity:1" />
+                            </linearGradient>
+                          </defs>
+                          <path fill="url(#logoGradient)" d="M50,5 C25,5 5,25 5,50 C5,75 25,95 50,95 C75,95 95,75 95,50 C95,25 75,5 50,5 Z M50,15 C69.5,15 85,30.5 85,50 C85,69.5 69.5,85 50,85 C30.5,85 15,69.5 15,50 C15,30.5 30.5,15 50,15 Z" />
+                          <path fill="#28a745" d="M62.5,30 C57.5,30 55,35 55,40 C55,45 57.5,50 62.5,50 C67.5,50 70,45 70,40 C70,35 67.5,30 62.5,30 Z M37.5,50 C32.5,50 30,55 30,60 C30,65 32.5,70 37.5,70 C42.5,70 45,65 45,60 C45,55 42.5,50 37.5,50 Z" />
+                        </svg>
+                        <h2 class="fw-bold mb-3">Join the Mission</h2>
+                        <p class="text-center">Create an account to start reducing waste and supporting your community today.</p>
                     </div>
-                </form>
-            {% else %}
-                <h2 class="card-title text-center">Invalid Registration Path</h2>
-                <p class="text-center mt-3">Please start from our homepage by selecting whether you are a Donor or an NGO.</p>
-                <div class="text-center mt-3">
-                    <a href="{% url 'home' %}" class="btn btn-primary">Go to Homepage</a>
+                    <div class="col-lg-7">
+                        <div class="register-form-wrapper">
+                            {% if selected_role %}
+                                <h2 class="card-title text-center fw-bold mb-1">Create an Account</h2>
+                                <h4 class="text-center text-muted mb-4">
+                                    Registering as: <span class="text-capitalize fw-bold">{{ selected_role }}</span>
+                                </h4>
+                                
+                                <form method="post" novalidate>
+                                    {% csrf_token %}
+                                    <input type="hidden" name="role" value="{{ selected_role }}">
+
+                                    <div class="form-group-custom">
+                                        <i class="fas fa-user form-icon"></i>
+                                        <input type="text" class="form-control form-control-custom {% if form.username.errors %}is-invalid{% endif %}" id="id_username" name="username" placeholder="Username" value="{{ form.username.value|default_if_none:'' }}" required>
+                                        <i class="fas fa-info-circle form-action-icon" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" 
+                                           data-bs-content="Characters must be at least 3 in length and may contain letters, digits, and the symbols @ . # _ only."></i>
+                                        {% for error in form.username.errors %}
+                                            <div class="error-message">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-group-custom">
+                                        <i class="fas fa-phone form-icon"></i>
+                                        <input type="tel" class="form-control form-control-custom {% if form.phone_number.errors %}is-invalid{% endif %}" id="id_phone_number" name="phone_number" placeholder="10-Digit Phone Number" value="{{ form.phone_number.value|default_if_none:'' }}" required>
+                                        {% for error in form.phone_number.errors %}
+                                            <div class="error-message">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-group-custom">
+                                        <i class="fas fa-lock form-icon"></i>
+                                        <input type="password" class="form-control form-control-custom {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" name="password1" placeholder="Password" required>
+                                        <i class="fas fa-eye form-action-icon password-toggle-icon" id="togglePassword1"></i>
+                                        {% for error in form.password1.errors %}
+                                            <div class="error-message">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-group-custom">
+                                        <i class="fas fa-check-circle form-icon"></i>
+                                        <input type="password" class="form-control form-control-custom {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" name="password2" placeholder="Confirm Password" required>
+                                        <i class="fas fa-eye form-action-icon password-toggle-icon" id="togglePassword2"></i>
+                                        {% for error in form.password2.errors %}
+                                            <div class="error-message">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-end mb-3">
+                                        <a tabindex="0" class="btn btn-sm btn-link" role="button" data-bs-toggle="popover" data-bs-trigger="hover focus" title="Password Rules" data-bs-html="true" 
+                                           data-bs-content="<ul><li>Your password can't be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can't be a commonly used password.</li><li>Your password can't be entirely numeric.</li></ul>">
+                                            <i class="fas fa-question-circle"></i> Password Help
+                                        </a>
+                                    </div>
+                                    
+                                    {% for error in form.non_field_errors %}
+                                        <div class="alert alert-danger p-2">{{ error }}</div>
+                                    {% endfor %}
+
+                                    <div class="d-grid mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                                    </div>
+                                </form>
+                            
+                            {% else %}
+                                <h2 class="card-title text-center">Invalid Registration Path</h2>
+                                <p class="text-center mt-3">Please start from our homepage by selecting whether you are a Donor or an NGO.</p>
+                                <div class="text-center mt-3"><a href="{% url 'home' %}" class="btn btn-primary">Go to Homepage</a></div>
+                            {% endif %}
+
+                            <hr class="my-4">
+                            <p class="text-center mb-0">Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+                        </div>
+                    </div>
                 </div>
-            {% endif %}
-            <hr>
-            <p class="text-center mb-0">Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+          return new bootstrap.Popover(popoverTriggerEl, { container: 'body' })
+        })
+
+        function setupPasswordToggle(toggleId, inputId) {
+            const toggleButton = document.getElementById(toggleId);
+            const passwordInput = document.getElementById(inputId);
+            if (toggleButton && passwordInput) {
+                toggleButton.addEventListener('click', function (e) {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    if (type === 'password') {
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    } else {
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+        }
+        setupPasswordToggle('togglePassword1', 'id_password1');
+        setupPasswordToggle('togglePassword2', 'id_password2');
+    });
+</script>
 {% endblock %}

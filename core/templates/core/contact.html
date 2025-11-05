@@ -1,55 +1,15 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
 <style>
-    .contact-section {
-        padding: 80px 0;
-    }
-    .contact-form-wrapper {
-        background: #ffffff;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-    }
-    .contact-info-wrapper {
-        padding: 40px;
-        background-color: #f8f9fa;
-        border-radius: 15px;
-    }
-    .contact-info-wrapper h3 {
-        font-weight: 700;
-        margin-bottom: 30px;
-    }
-    .info-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 25px;
-    }
-    .info-item .icon {
-        flex-shrink: 0;
-        width: 50px;
-        height: 50px;
-        background: #e9fbf0;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 20px;
-        color: #28a745;
-        font-size: 1.2rem;
-    }
-    .info-item p {
-        margin: 0;
-        line-height: 1.6;
-    }
-    .linkedin-icon a {
-        font-size: 1.5rem;
-        color: #0077b5; /* LinkedIn's brand color */
-        transition: transform 0.3s ease;
-    }
-    .linkedin-icon a:hover {
-        transform: scale(1.2);
-    }
+    .contact-section { padding: 80px 0; }
+    .contact-form-wrapper { background: #ffffff; padding: 40px; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+    .contact-info-wrapper { padding: 40px; background-color: #f8f9fa; border-radius: 15px; }
+    .contact-info-wrapper h3 { font-weight: 700; margin-bottom: 30px; }
+    .info-item { display: flex; align-items: flex-start; margin-bottom: 25px; }
+    .info-item .icon { flex-shrink: 0; width: 50px; height: 50px; background: #e9fbf0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 20px; color: #28a745; font-size: 1.2rem; }
+    .info-item p { margin: 0; line-height: 1.6; }
+    .linkedin-icon a { font-size: 1.5rem; color: #0077b5; transition: transform 0.3s ease; }
+    .linkedin-icon a:hover { transform: scale(1.2); }
 </style>
 
 <div class="contact-section">
@@ -58,9 +18,7 @@
             <h1 class="display-4 fw-bold">Get in Touch</h1>
             <p class="lead text-muted">We'd love to hear from you. Send us a message or contact one of the developers directly.</p>
         </div>
-
         <div class="row">
-            <!-- Left Column: Contact Form -->
             <div class="col-lg-7 mb-4 mb-lg-0">
                 <div class="contact-form-wrapper">
                     <h3>Send a Message</h3>
@@ -68,76 +26,51 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="name" class="form-label">Your Name</label>
-                            <input type="text" class="form-control" id="name" required>
+                            <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Your Email</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                         <div class="mb-3">
                             <label for="subject" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subject" required>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" rows="5" required></textarea>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Send Message</button>
                     </form>
                 </div>
             </div>
-
-            <!-- Right Column: Contact Details -->
             <div class="col-lg-5">
                 <div class="contact-info-wrapper">
                     <h3>Contact Information</h3>
                     <div class="info-item">
                         <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div>
-                            <strong>Address:</strong>
-                            <p>IIT Jodhpur Campus, Rajasthan, India</p>
-                        </div>
+                        <div><strong>Address:</strong><p>IIT Jodhpur Campus, Rajasthan, India</p></div>
                     </div>
-                    
                     <hr class="my-4">
-                    
-                    <!-- Developer 1 -->
                     <h5>Developer 1</h5>
                     <div class="info-item">
                         <div class="icon"><i class="fas fa-envelope"></i></div>
-                        <div>
-                            <strong>Email:</strong>
-                            <p>m25cse023@iitj.ac.in</p>
-                        </div>
+                        <div><strong>Email:</strong><p>m25cse023@iitj.ac.in</p></div>
                     </div>
                     <div class="info-item">
                         <div class="icon"><i class="fas fa-phone"></i></div>
-                        <div>
-                            <strong>Phone:</strong>
-                            <p>+91 62834 56633</p>
-                        </div>
+                        <div><strong>Phone:</strong><p>+91 62834 56633</p></div>
                     </div>
-
-                    <!-- Developer 2 -->
                     <h5 class="mt-4">Developer 2</h5>
                     <div class="info-item">
                         <div class="icon"><i class="fas fa-envelope"></i></div>
-                        <div>
-                            <strong>Email:</strong>
-                            <p>m25cse026@iit.ac.in</p>
-                        </div>
+                        <div><strong>Email:</strong><p>m25cse026@iit.ac.in</p></div>
                     </div>
                      <div class="info-item">
                         <div class="icon"><i class="fas fa-phone"></i></div>
-                        <div>
-                            <strong>Phone:</strong>
-                            <p>+91 67837 83224</p>
-                        </div>
+                        <div><strong>Phone:</strong><p>+91 67837 83224</p></div>
                     </div>
-
                     <hr class="my-4">
-
-                    <!-- LinkedIn Icon -->
                     <div class="info-item">
                         <div class="icon"><i class="fas fa-globe"></i></div>
                         <div>

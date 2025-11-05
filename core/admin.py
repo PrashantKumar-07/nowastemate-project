@@ -1,40 +1,39 @@
-"""
-Configuration for the Django admin interface for the 'core' app.
-
-This file is used to register the database models with the Django admin site,
-making them manageable for the superuser. We customize the display to show
-key information and allow for easy approval of new users.
-"""
 from django.contrib import admin
-from .models import UserProfile, Donation
+from .models import UserProfile, Donation, ContactMessage
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    """
-    Customizes the admin view for UserProfile model.
-    """
-    # Fields to display in the list view of user profiles
     list_display = ('user', 'role', 'is_approved')
-    # Filters to allow sorting by approval status and role
     list_filter = ('is_approved', 'role')
-    # Action to approve selected users in bulk
     actions = ['approve_users']
 
     def approve_users(self, request, queryset):
-        """
-        Custom admin action to approve selected user profiles.
-        """
         queryset.update(is_approved=True)
     approve_users.short_description = "Approve selected users"
 
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
-    """
-    Customizes the admin view for Donation model.
-    """
-    # Fields to display in the list view of donations
-    list_display = ('food_item', 'donor', 'status', 'claimed_by', 'created_at')
-    # Filters to allow sorting by status
-    list_filter = ('status', 'created_at')
-    # Fields that can be searched
-    search_fields = ('food_item', 'donor__username', 'claimed_by__username')
+    list_display = ('food_item', 'donor', 'status', 'category', 'pickup_by')
+    list_filter = ('status', 'category', 'created_at')
+    search_fields = ('food_item', 'donor__username')
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'subject', 'sent_at')
+    readonly_fields = ('name', 'email', 'subject', 'message', 'sent_at')
+
+    # This is the list of actions that will appear in the dropdown.
+    actions = ['delete_selected_messages']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return True
+
+    def delete_selected_messages(self, request, queryset):
+        queryset.delete()
+    delete_selected_messages.short_description = "Delete selected contact messages"

@@ -1,21 +1,28 @@
-"""
-Custom forms for the 'core' application.
-
-This file defines custom form classes to extend the default Django forms.
-The CustomUserCreationForm adds a 'phone_number' field to the user
-registration process, ensuring that this crucial information is collected.
-"""
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import UserProfile
 
 class CustomUserCreationForm(UserCreationForm):
-    """
-    A custom form that extends the default UserCreationForm to include
-    a phone number field.
-    """
-    phone_number = forms.CharField(max_length=15, required=True, help_text='Enter your 10-digit mobile number.')
+    phone_number = forms.CharField(
+        label='Phone Number',
+        max_length=10,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'type': 'tel',
+            'pattern': '[0-9]{10}',
+            'title': 'Please enter a 10-digit mobile number.'
+        })
+    )
 
     class Meta(UserCreationForm.Meta):
-        # We don't need to add a model here because we save the fields manually in the view.
         fields = UserCreationForm.Meta.fields + ('phone_number',)
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+
+        if not phone.isdigit():
+            raise forms.ValidationError("Phone number must contain only digits.")
+
+        if len(phone) != 10:
+            raise forms.ValidationError("Phone number must be 10 digits long.")
+
+        return phone

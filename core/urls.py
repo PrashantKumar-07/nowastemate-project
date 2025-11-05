@@ -11,13 +11,9 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    
     path('contact/', views.contact_view, name='contact'),
-    
-    # Dashboards
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    
-    # Donation Management
+    path('donations/complete/<int:donation_id>/', views.complete_donation_view, name='complete_donation'),
     path('donate/', views.post_donation_view, name='post_donation'),
     path('donations/', views.view_donations_view, name='view_donations'),
     path('donations/claim/<int:donation_id>/', views.claim_donation_view, name='claim_donation'),

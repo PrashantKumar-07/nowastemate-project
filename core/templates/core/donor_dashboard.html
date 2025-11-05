@@ -1,46 +1,54 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Donor Dashboard</h2>
-    <a href="{% url 'post_donation' %}" class="btn btn-primary">Post New Donation</a>
-</div>
-
-<div class="card p-4">
-    <h4 class="card-title">My Donation History</h4>
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Food Item</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Date Posted</th>
-                    <th>Claimed By</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for donation in donations %}
-                <tr>
-                    <td>{{ donation.food_item }}</td>
-                    <td>{{ donation.quantity }}</td>
-                    <td>
-                        {% if donation.status == 'available' %}
-                            <span class="badge bg-success">Available</span>
-                        {% else %}
-                            <span class="badge bg-warning text-dark">Claimed</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ donation.created_at|date:"d M Y, h:i A" }}</td>
-                    <td>{{ donation.claimed_by.username|default:"-" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">You have not posted any donations yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold">Donor Dashboard</h1>
+        <a href="{% url 'post_donation' %}" class="btn btn-primary">Post New Donation</a>
     </div>
+
+    <h4 class="mb-4">My Donation History</h4>
+
+    {% for donation in donations %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="my-0 fw-normal">{{ donation.food_item }}</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Category:</strong> {{ donation.get_category_display }}</p>
+            <p><strong>Quantity:</strong> {{ donation.quantity }}</p>
+            <p><strong>Pickup Before:</strong> {{ donation.pickup_by|date:"D, M j, Y, g:i A" }}</p>
+            <p><strong>Date Posted:</strong> {{ donation.created_at|date:"d M Y, h:i A" }}</p>
+            <hr>
+            <p>
+                <strong>Status:</strong> 
+                {% if donation.status == 'available' %}
+                    <span class="badge bg-success fs-6">Available</span>
+                {% elif donation.status == 'claimed' %}
+                    <span class="badge bg-warning text-dark fs-6">Claimed</span>
+                {% else %}
+                    <span class="badge bg-secondary fs-6">Completed</span>
+                {% endif %}
+            </p>
+
+            {% if donation.status == 'claimed' %}
+                <div class="alert alert-info mt-3">
+                    <strong>Claimed by:</strong> {{ donation.claimed_by.username }}<br>
+                    <strong>Contact:</strong> {{ donation.claimed_by.userprofile.phone_number }}
+                </div>
+                <a href="{% url 'complete_donation' donation.id %}" class="btn btn-info btn-sm">Mark as Completed</a>
+            {% elif donation.status == 'completed' %}
+                <div class="alert alert-light mt-3">
+                    This donation has been completed. Thank you for your contribution!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="card p-4 text-center">
+        <p class="lead">You have not posted any donations yet.</p>
+    </div>
+    {% endfor %}
+
 </div>
 {% endblock %}
