@@ -23,9 +23,13 @@ def register_view(request):
         form = CustomUserCreationForm(request.POST)
         
         if form.is_valid() and selected_role in ['donor', 'ngo']:
-            user = form.save()
+            user = form.save(commit=False)
+            user.email = form.cleaned_data['email']
+            user.save()
+            
             phone_number = form.cleaned_data.get('phone_number')
             UserProfile.objects.create(user=user, role=selected_role, phone_number=phone_number)
+            
             messages.success(request, 'Registration successful! Please wait for admin approval.')
             return redirect('login')
         else:
@@ -48,7 +52,6 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
-                # Check for profile and approval before logging in.
                 if hasattr(user, 'userprofile') and user.userprofile.is_approved:
                     login(request, user)
                     messages.info(request, f'Welcome back, {username}!')

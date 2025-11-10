@@ -2,18 +2,17 @@
 
 {% block content %}
 <style>
-    /* A more modern and clean design for the donation cards */
     .donation-card {
         background: #ffffff;
         border-radius: 12px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         border: none;
-        border-top: 4px solid; /* The colored border will now be at the top */
+        border-top: 4px solid;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         margin-bottom: 2.5rem;
         display: flex;
         flex-direction: column;
-        height: 100%; /* Makes cards in the same row equal height */
+        height: 100%;
     }
 
     .donation-card:hover {
@@ -21,22 +20,21 @@
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
     }
 
-    /* Unique border-top colors for each category */
-    .border-top-veg { border-color: #28a745; } /* Green */
-    .border-top-non-veg { border-color: #dc3545; } /* Red */
-    .border-top-packaged { border-color: #ffc107; } /* Yellow */
-    .border-top-fruits-veg { border-color: #fd7e14; } /* Orange */
-    .border-top-bakery { border-color: #6f42c1; } /* Purple */
-    .border-top-other { border-color: #0d6efd; } /* Changed from Grey to Primary Blue */
-    
+    .border-top-veg { border-color: #28a745; }
+    .border-top-non-veg { border-color: #dc3545; }
+    .border-top-packaged { border-color: #ffc107; }
+    .border-top-fruits-veg { border-color: #fd7e14; }
+    .border-top-bakery { border-color: #6f42c1; }
+    .border-top-other { border-color: #0d6efd; }
+
     .card-body {
         padding: 1.75rem;
-        flex-grow: 1; /* Allows body to expand and push footer down */
+        flex-grow: 1;
     }
 
     .card-title {
         font-weight: 700;
-        font-size: 1.5rem; /* Larger title */
+        font-size: 1.5rem;
         color: #212529;
         margin-bottom: 0.5rem;
     }
@@ -51,21 +49,21 @@
         text-transform: uppercase;
         margin-bottom: 1rem;
     }
-    
+
     .info-list {
         margin-top: 1.5rem;
     }
-    
+
     .info-list li {
         margin-bottom: 1rem;
-        color: #495057; /* Darker text for readability */
+        color: #495057;
         display: flex;
         align-items: center;
         font-size: 0.95rem;
     }
-    
+
     .info-list i {
-        color: #0d6efd; /* Changed from Grey to Primary Blue */
+        color: #0d6efd;
         margin-right: 15px;
         width: 20px;
         text-align: center;
@@ -79,7 +77,6 @@
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
     }
-
 </style>
 
 <div class="container my-5">
@@ -91,7 +88,6 @@
     <div class="row">
         {% for donation in donations %}
         <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-            <!-- Applying the border color class dynamically -->
             <div class="donation-card 
                 {% if donation.category == 'veg' %}border-top-veg
                 {% elif donation.category == 'non_veg' %}border-top-non-veg
@@ -102,7 +98,6 @@
                 
                 <div class="card-body">
                     <h3 class="card-title">{{ donation.food_item }}</h3>
-                    <!-- Displaying the category as a colored "pill" or tag -->
                     <div class="category-tag 
                         {% if donation.category == 'veg' %}bg-success
                         {% elif donation.category == 'non_veg' %}bg-danger
@@ -118,26 +113,23 @@
                         <li><i class="fas fa-hourglass-half"></i><strong>Pickup Before:</strong>&nbsp; {{ donation.pickup_by|date:"D, M j, g:i A" }}</li>
                         <li><i class="fas fa-map-marker-alt"></i><strong>Location:</strong>&nbsp; {{ donation.pickup_location }}</li>
                         <li><i class="fas fa-user"></i><strong>Posted by:</strong>&nbsp; {{ donation.donor.username }}</li>
-                        <!-- ADDED: Displaying the Donor's Phone Number -->
                         <li><i class="fas fa-phone"></i><strong>Contact:</strong>&nbsp; {{ donation.donor.userprofile.phone_number }}</li>
                     </ul>
                 </div>
+
                 <div class="card-footer d-grid">
                     <a href="{% url 'claim_donation' donation.id %}" class="btn btn-primary">Claim This Donation</a>
                 </div>
             </div>
         </div>
         {% empty %}
-            <!-- This message shows if there are no donations -->
-            <div class="col-12">
-                <div class="alert alert-info text-center" role="alert">
-                    <h4 class="alert-heading">All Clear!</h4>
-                    <p>There are currently no available food donations. Please check back later.</p>
-                </div>
+        <div class="col-12">
+            <div class="alert alert-info text-center" role="alert">
+                <h4 class="alert-heading">All Clear!</h4>
+                <p>There are currently no available food donations. Please check back later.</p>
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>
 {% endblock %}
-
-

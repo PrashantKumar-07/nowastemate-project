@@ -3,9 +3,32 @@ from .models import UserProfile, Donation, ContactMessage
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role', 'is_approved')
+    list_display = ('user', 'email_display', 'phone_number', 'role', 'is_approved')
     list_filter = ('is_approved', 'role')
     actions = ['approve_users']
+
+    fieldsets = (
+        ('User Credentials', {
+            'fields': ('user', 'email_detail_display'),
+        }),
+        ('Profile Details', {
+            'fields': ('role', 'phone_number'),
+        }),
+        ('Authorization Status', {
+            'fields': ('is_approved',),
+            'description': 'Check this box to grant access to the platform.',
+        }),
+    )
+    
+    readonly_fields = ('email_detail_display',)
+
+    def email_display(self, obj):
+        return obj.user.email
+    email_display.short_description = "Email Address"
+
+    def email_detail_display(self, obj):
+        return obj.user.email
+    email_detail_display.short_description = "Email Address"
 
     def approve_users(self, request, queryset):
         queryset.update(is_approved=True)
@@ -22,7 +45,6 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'subject', 'sent_at')
     readonly_fields = ('name', 'email', 'subject', 'message', 'sent_at')
 
-    # This is the list of actions that will appear in the dropdown.
     actions = ['delete_selected_messages']
 
     def has_add_permission(self, request):

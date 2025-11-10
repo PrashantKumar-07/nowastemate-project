@@ -9,7 +9,9 @@
         overflow: hidden;
     }
     .register-visual {
-        background: linear-gradient(135deg, #28a745, #218838);
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1200');
+        background-size: cover;
+        background-position: center;
         color: white;
         padding: 50px;
         display: flex;
@@ -102,6 +104,14 @@
                                         <i class="fas fa-info-circle form-action-icon" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="right" 
                                            data-bs-content="Characters must be at least 3 in length and may contain letters, digits, and the symbols @ . # _ only."></i>
                                         {% for error in form.username.errors %}
+                                            <div class="error-message">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="form-group-custom">
+                                        <i class="fas fa-envelope form-icon"></i>
+                                        <input type="email" class="form-control form-control-custom {% if form.email.errors %}is-invalid{% endif %}" id="id_email" name="email" placeholder="Email Address" value="{{ form.email.value|default_if_none:'' }}" required>
+                                        {% for error in form.email.errors %}
                                             <div class="error-message">{{ error }}</div>
                                         {% endfor %}
                                     </div>

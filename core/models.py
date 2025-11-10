@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-# Stores extra info for each user, like their role and approval status.
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     
@@ -15,7 +14,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
 
-# Represents a single food donation.
 class Donation(models.Model):
     CATEGORY_CHOICES = [
         ('veg', 'Cooked Meal (Veg)'),
@@ -49,7 +47,6 @@ class Donation(models.Model):
     def __str__(self):
         return f"{self.food_item} by {self.donor.username}"
 
-# Stores messages from the contact form.
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()

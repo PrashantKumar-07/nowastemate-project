@@ -2,19 +2,14 @@
 
 {% block content %}
 <style>
-    /* --- FINAL, POLISHED HOMEPAGE STYLES --- */
-
-    /* FINAL Hero Section with a Better Background Image */
     .hero-section {
         position: relative;
-        /* NEW, MORE SUITABLE BACKGROUND IMAGE */
         background: url('https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
         background-size: cover;
         color: white;
         padding: 120px 0;
         text-align: center;
     }
-    /* Creates the dark overlay for text readability */
     .hero-section::before {
         content: '';
         position: absolute;
@@ -22,11 +17,10 @@
         left: 0;
         right: 0;
         bottom: 0;
-        /* INCREASED DARKNESS for better contrast */
         background: rgba(0, 0, 0, 0.7); 
     }
     .hero-content {
-        position: relative; /* Sits on top of the overlay */
+        position: relative;
         z-index: 1;
     }
     .hero-section h1 {
@@ -98,19 +92,13 @@
     }
 </style>
 
-<!-- ====================================================== -->
-<!--  FINAL, STUNNING HERO SECTION                        -->
-<!-- ====================================================== -->
 <div class="hero-section">
     <div class="hero-content">
-        <!-- REFINED HEADLINE -->
         <h1 class="display-3">Where Compassion Meets a Plate</h1>
-        <!-- REFINED PARAGRAPH -->
         <p class="lead">NoWasteMate bridges the gap between surplus food and community need. We turn potential waste into vital meals, fostering a more sustainable and caring neighborhood, one plate at a time.</p>
     </div>
 </div>
 
-<!-- All other sections remain, and will look great -->
 <div class="container my-5 py-5">
     <div class="how-it-works text-center">
         <h2 class="section-title">How It Works</h2>
@@ -126,20 +114,16 @@
     <div class="container">
         <div class="about-content">
             <div class="row align-items-center">
-                <!-- Left Column: The Story -->
                 <div class="col-lg-6 story-content">
                     <h3>Our Story</h3>
-                    <!-- REFINED TEXT -->
                     <p class="text-muted">NoWasteMate was born from a simple observation: every day, perfectly edible food from college messes, canteens, and local eateries goes to waste, while many in our own community struggle with hunger. This initiative was inspired by the direct experience of witnessing this disconnect firsthand and believing that a simple, technological bridge could make a profound difference.</p>
                     <p class="text-muted">This platform is more than just code; it's a commitment to our community. It’s a tool designed to connect the hands that have surplus with the hands that are in need, efficiently and reliably. We aim to transform potential waste into meaningful meals, fostering a culture of sharing and sustainability.</p>
                 </div>
-                <!-- Right Column: Mission & Vision -->
                 <div class="col-lg-6 ps-lg-5 values-list">
                     <div class="value-item">
                         <div class="icon"><i class="fas fa-bullseye"></i></div>
                         <div>
                             <h4>Our Mission</h4>
-                            <!-- REFINED TEXT -->
                             <p>To significantly reduce food waste and combat hunger by creating a seamless, real-time connection between food donors and community organizations.</p>
                         </div>
                     </div>
@@ -147,7 +131,6 @@
                         <div class="icon"><i class="fas fa-eye"></i></div>
                         <div>
                             <h4>Our Vision</h4>
-                            <!-- REFINED TEXT -->
                             <p>We envision a future where no edible food goes to waste, and every member of our community has reliable access to nutritious meals.</p>
                         </div>
                     </div>
@@ -155,7 +138,6 @@
                         <div class="icon"><i class="fas fa-heart"></i></div>
                         <div>
                             <h4>Our Values</h4>
-                            <!-- REFINED TEXT -->
                             <p>Our work is driven by three core principles: compassion for our community, a commitment to sustainability, and a belief in the power of technology to create a positive impact.</p>
                         </div>
                     </div>

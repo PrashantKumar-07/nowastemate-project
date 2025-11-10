@@ -5,7 +5,6 @@ URL patterns for the 'core' application.
 from django.urls import path
 from . import views
 
-# The name argument is used for URL reversing
 urlpatterns = [
     path('', views.home_view, name='home'),
     path('register/', views.register_view, name='register'),
