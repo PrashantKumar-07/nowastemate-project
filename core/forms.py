@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django import forms
 
 class CustomUserCreationForm(UserCreationForm):
@@ -19,10 +20,20 @@ class CustomUserCreationForm(UserCreationForm):
             'pattern': '[0-9]{10}',
             'title': 'Please enter a 10-digit mobile number.',
             'placeholder': '10-Digit Phone Number'
+            'title': 'Please enter a 10-digit mobile number.',
+            'placeholder': '10-Digit Phone Number'
         })
     )
 
     class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email', 'phone_number',)
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email address is already in use.")
+        return email
         model = User
         fields = UserCreationForm.Meta.fields + ('email', 'phone_number',)
 
