@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.unread_notifications', # <-- ADD THIS LINE
             ],
         },
     },
@@ -75,8 +76,12 @@ WSGI_APPLICATION = 'nowastemate.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'nowastemate_db',
+        'USER': 'postgres',
+        'PASSWORD': 'iitj',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -128,3 +133,4 @@ LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+LOGIN_URL = 'login'

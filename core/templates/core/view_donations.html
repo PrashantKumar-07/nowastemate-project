@@ -1,143 +1,73 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
 <style>
-    /* A more modern and clean design for the donation cards */
     .donation-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        border: none;
-        border-top: 4px solid; /* The colored border will now be at the top */
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        margin-bottom: 2.5rem;
+        border: 1px solid #dee2e6;
+        border-radius: .75rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background-color: #fff;
         display: flex;
         flex-direction: column;
-        height: 100%; /* Makes cards in the same row equal height */
     }
-
     .donation-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-5px);
     }
-
-    /* Unique border-top colors for each category */
-    .border-top-veg { border-color: #28a745; } /* Green */
-    .border-top-non-veg { border-color: #dc3545; } /* Red */
-    .border-top-packaged { border-color: #ffc107; } /* Yellow */
-    .border-top-fruits-veg { border-color: #fd7e14; } /* Orange */
-    .border-top-bakery { border-color: #6f42c1; } /* Purple */
-    .border-top-other { border-color: #0d6efd; } /* Changed from Grey to Primary Blue */
-    
-    .card-body {
-        padding: 1.75rem;
-        flex-grow: 1; /* Allows body to expand and push footer down */
+    .card-header-tag {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
     }
-
-    .card-title {
-        font-weight: 700;
-        font-size: 1.5rem; /* Larger title */
-        color: #212529;
-        margin-bottom: 0.5rem;
+    .donor-info {
+        background-color: #f8f9fa;
+        padding: 10px 20px;
+        border-top: 1px solid #dee2e6;
+        margin-top: auto;
     }
-
-    .category-tag {
-        display: inline-block;
-        font-size: 0.7rem;
-        font-weight: 700;
-        padding: 0.3em 0.8em;
-        border-radius: 50px;
-        color: #fff;
-        text-transform: uppercase;
-        margin-bottom: 1rem;
+    .star-rating {
+        color: #ffc107;
     }
-    
-    .info-list {
-        margin-top: 1.5rem;
-    }
-    
-    .info-list li {
-        margin-bottom: 1rem;
-        color: #495057; /* Darker text for readability */
-        display: flex;
-        align-items: center;
-        font-size: 0.95rem;
-    }
-    
-    .info-list i {
-        color: #0d6efd; /* Changed from Grey to Primary Blue */
-        margin-right: 15px;
-        width: 20px;
-        text-align: center;
-        font-size: 1.1rem;
-    }
-
-    .card-footer {
-        background-color: #fff;
-        border-top: 1px solid #f1f1f1;
-        padding: 1.25rem 1.75rem;
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
 </style>
 
 <div class="container my-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">Available Food Donations</h1>
-        <p class="lead text-muted">Browse the listings below and claim a donation to support your community.</p>
-    </div>
+    <h1 class="display-5 fw-bold text-center mb-5">Available Food Donations</h1>
 
-    <div class="row">
+    <div class="row g-4">
         {% for donation in donations %}
-        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-            <!-- Applying the border color class dynamically -->
-            <div class="donation-card 
-                {% if donation.category == 'veg' %}border-top-veg
-                {% elif donation.category == 'non_veg' %}border-top-non-veg
-                {% elif donation.category == 'packaged' %}border-top-packaged
-                {% elif donation.category == 'fruits_veg' %}border-top-fruits-veg
-                {% elif donation.category == 'bakery' %}border-top-bakery
-                {% else %}border-top-other{% endif %}">
-                
-                <div class="card-body">
-                    <h3 class="card-title">{{ donation.food_item }}</h3>
-                    <!-- Displaying the category as a colored "pill" or tag -->
-                    <div class="category-tag 
-                        {% if donation.category == 'veg' %}bg-success
-                        {% elif donation.category == 'non_veg' %}bg-danger
-                        {% elif donation.category == 'packaged' %}bg-warning text-dark
-                        {% elif donation.category == 'fruits_veg' %}bg-orange
-                        {% elif donation.category == 'bakery' %}bg-purple
-                        {% else %}bg-primary{% endif %}">
-                        <i class="fas fa-tag me-1"></i> {{ donation.get_category_display }}
-                    </div>
-
-                    <ul class="list-unstyled info-list">
-                        <li><i class="fas fa-box-open"></i><strong>Quantity:</strong>&nbsp; {{ donation.quantity }}</li>
-                        <li><i class="fas fa-hourglass-half"></i><strong>Pickup Before:</strong>&nbsp; {{ donation.pickup_by|date:"D, M j, g:i A" }}</li>
-                        <li><i class="fas fa-map-marker-alt"></i><strong>Location:</strong>&nbsp; {{ donation.pickup_location }}</li>
-                        <li><i class="fas fa-user"></i><strong>Posted by:</strong>&nbsp; {{ donation.donor.username }}</li>
-                        <!-- ADDED: Displaying the Donor's Phone Number -->
-                        <li><i class="fas fa-phone"></i><strong>Contact:</strong>&nbsp; {{ donation.donor.userprofile.phone_number }}</li>
+        <div class="col-lg-4 col-md-6">
+            <div class="donation-card h-100">
+                <div class="card-body p-4">
+                    <span class="badge bg-primary card-header-tag">{{ donation.get_category_display }}</span>
+                    <h4 class="card-title fw-bold mb-3">{{ donation.food_item }}</h4>
+                    <ul class="list-unstyled text-muted mb-4">
+                        <li class="mb-2"><i class="fas fa-box-open me-2 text-primary"></i> <strong>Quantity:</strong> {{ donation.quantity }}</li>
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-primary"></i> <strong>Location:</strong> {{ donation.pickup_location }}</li>
+                        <li class="mb-2"><i class="fas fa-clock me-2 text-danger"></i> <strong>Pickup By:</strong> {{ donation.pickup_by|date:"D, M j, g:i A" }}</li>
+                        <li class="mb-2"><i class="fas fa-calendar-alt me-2 text-primary"></i> <strong>Posted:</strong> {{ donation.created_at|date:"d M Y" }}</li>
+                        
+                        <li class="mb-2"><i class="fas fa-phone me-2 text-primary"></i> <strong>Contact:</strong> {{ donation.donor.userprofile.phone_number }}</li>
                     </ul>
+                    <a href="{% url 'claim_donation' donation.id %}" class="btn btn-primary w-100">Claim This Donation</a>
                 </div>
-                <div class="card-footer d-grid">
-                    <a href="{% url 'claim_donation' donation.id %}" class="btn btn-primary">Claim This Donation</a>
+                <div class="donor-info">
+                    <strong>Donor:</strong> {{ donation.donor.username }}
+                    <span class="star-rating float-end">
+                        <i class="fas fa-star"></i>
+                        <strong>{{ donation.donor.userprofile.average_rating|floatformat:1 }}</strong>
+                    </span>
                 </div>
             </div>
         </div>
         {% empty %}
-            <!-- This message shows if there are no donations -->
-            <div class="col-12">
-                <div class="alert alert-info text-center" role="alert">
-                    <h4 class="alert-heading">All Clear!</h4>
-                    <p>There are currently no available food donations. Please check back later.</p>
-                </div>
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <p class="lead mb-0">There are no available donations at this time. Please check back later.</p>
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>
 {% endblock %}
-
-

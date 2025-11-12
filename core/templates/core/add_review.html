@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<style>
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 0.3rem;
+        font-size: 2.5rem;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+    .star-rating input:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }
+    
+    .review-card-header {
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .review-card-body {
+        padding: 2.5rem;
+    }
+
+    .btn-submit-review {
+        background-color: #28a745;
+        border-color: #28a745;
+        font-weight: 600;
+        padding: 12px 20px;
+    }
+    .btn-submit-review:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+</style>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0" style="border-radius: 15px;">
+                
+                <div class="review-card-header text-center">
+                    <h2 class="card-title fw-bold mb-0">Leave a Review</h2>
+                </div>
+                
+                <div class="review-card-body">
+                    <p class="text-center text-muted fs-5">You are reviewing: <strong>{{ user_to_review.username }}</strong></p>
+                    <p class="text-center text-muted mb-4">For the donation of: <strong>{{ donation.food_item }}</strong>.</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4 text-center">
+                            <label class="form-label fs-5">Your Rating</label>
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="rating" value="5" required/><label for="star5" title="5 stars">★</label>
+                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">★</label>
+                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars">★</label>
+                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars">★</label>
+                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star">★</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="comment" class="form-label fs-5">Comment (Optional)</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="Share your experience..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg btn-submit-review">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

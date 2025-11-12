@@ -1,0 +1,161 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<style>
+    .stat-card {
+        background-color: #fff;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    }
+    .stat-card .card-title {
+        font-weight: 600;
+        color: #555;
+    }
+    .stat-card .display-4 {
+        color: #28a745;
+    }
+    .star-rating {
+        color: #ffc107;
+    }
+    .card-subtitle-text {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+</style>
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Our Impact</h1>
+        <p class="lead text-muted">A data-driven look at our community's contribution.</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center stat-card h-100">
+                <div class="card-body p-4">
+                    <i class="fas fa-hands-helping fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Donations Completed</h5>
+                    <p class="display-4 fw-bold">{{ total_donations }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center stat-card h-100">
+                <div class="card-body p-4">
+                    <i class="fas fa-store fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Verified NGOs</h5>
+                    <p class="display-4 fw-bold">{{ total_ngos }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center stat-card h-100">
+                <div class="card-body p-4">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">Registered Donors</h5>
+                    <p class="display-4 fw-bold">{{ total_donors }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card text-center stat-card h-100">
+                <div class="card-body p-4">
+                    <i class="fas fa-star fa-3x star-rating mb-3"></i>
+                    <h5 class="card-title">"Trusted" Donor Rating</h5>
+                    <p class="display-4 fw-bold">{{ avg_donor_rating|floatformat:1 }}</p>
+                    <p class="card-subtitle-text">(Avg. for members with {{ min_reviews_for_rating }}+ reviews)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-center stat-card h-100">
+                <div class="card-body p-4">
+                    <i class="fas fa-star fa-3x star-rating mb-3"></i>
+                    <h5 class="card-title">"Trusted" NGO Rating</h5>
+                    <p class="display-4 fw-bold">{{ avg_ngo_rating|floatformat:1 }}</p>
+                    <p class="card-subtitle-text">(Avg. for members with {{ min_reviews_for_rating }}+ reviews)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="card stat-card">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-center">Top 5 Donors</h5>
+                    <canvas id="topDonorsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card stat-card">
+                <div class="card-body p-4">
+                    <h5 class="card-title text-center">Donations Over Last 30 Days</h5>
+                    <canvas id="donationsOverTimeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+       
+        const topDonorsData = {
+            labels: {{ donor_labels|safe }},
+            datasets: [{
+                label: 'Donations Made',
+                data: {{ donor_counts|safe }},
+                backgroundColor: '#28a745',
+            }]
+        };
+        const topDonorsCtx = document.getElementById('topDonorsChart').getContext('2d');
+        new Chart(topDonorsCtx, {
+            type: 'bar',
+            data: topDonorsData,
+            options: {
+                indexAxis: 'y', 
+                scales: { 
+                    x: { beginAtZero: true, ticks: { precision: 0 } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+        
+        
+        const timeData = {
+            labels: {{ time_labels|safe }},
+            datasets: [{
+                label: 'Donations per Day',
+                data: {{ time_counts|safe }},
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                borderColor: '#28a745',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.1
+            }]
+        };
+        const timeCtx = document.getElementById('donationsOverTimeChart').getContext('2d');
+        new Chart(timeCtx, {
+            type: 'line',
+            data: timeData,
+            options: {
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+    });
+</script>
+{% endblock %}

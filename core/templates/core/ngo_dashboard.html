@@ -1,40 +1,121 @@
 {% extends 'core/base.html' %}
-
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>NGO Dashboard</h2>
-    <a href="{% url 'view_donations' %}" class="btn btn-primary">Browse Available Donations</a>
-</div>
+<style>
+    .donation-card-body {
+        font-size: 1rem; 
+    }
+    .donation-card-body p {
+        margin-bottom: 0.75rem; 
+    }
+    .card-footer-text {
+        font-size: 0.9rem; 
+        color: #6c757d;
+    }
+    .star-rating {
+        color: #ffc107;
+    }
+</style>
 
-<div class="card p-4">
-    <h4 class="card-title">My Claimed Donations</h4>
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Food Item</th>
-                    <th>Quantity</th>
-                    <th>Pickup Location</th>
-                    <th>Donated By</th>
-                    <th>Date Claimed</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for donation in claimed_donations %}
-                <tr>
-                    <td>{{ donation.food_item }}</td>
-                    <td>{{ donation.quantity }}</td>
-                    <td>{{ donation.pickup_location }}</td>
-                    <td>{{ donation.donor.username }}</td>
-                    <td>{{ donation.updated_at|date:"d M Y, h:i A" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">You have not claimed any donations yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold">NGO Dashboard</h1>
+        <a href="{% url 'view_donations' %}" class="btn btn-primary">Browse Available Donations</a>
     </div>
+
+    <h4 class="mb-4">My Claimed Donations</h4>
+
+    {% for donation in claimed_donations %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="my-0 fw-normal">{{ donation.food_item }}</h5>
+            <small class="text-muted">{{ donation.created_at|date:"d M Y" }}</small>
+        </div>
+        <div class="card-body donation-card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Category:</strong> {{ donation.get_category_display }}</p>
+                    <p><strong>Quantity:</strong> {{ donation.quantity }}</p>
+                    <p><strong>Pickup Before:</strong> {{ donation.pickup_by|date:"g:i A, D, M j" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        <strong>Status:</strong> 
+                        {% if donation.status == 'completed' %}
+                            <span class="badge bg-secondary fs-6">Completed</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark fs-6">Claimed (Pending Completion)</span>
+                        {% endif %}
+                    </p>
+                    <div class="alert alert-info mt-3 p-3">
+                        <strong>Donor:</strong> {{ donation.donor.username }}
+                        <br>
+                        <strong>Pickup Address:</strong> {{ donation.pickup_location }}<br>
+                        <strong>Donor Contact:</strong> {{ donation.donor.userprofile.phone_number }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if donation.status == 'completed' %}
+        <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <div>
+                {% if donation.review_for_me %}
+                    <span class="card-footer-text">
+                        Donor's Rating: <span class="star-rating">★ {{ donation.review_for_me.rating }}</span>
+                    </span>
+                    <button type="button" class="btn btn-link btn-sm p-0 ms-2" data-bs-toggle="modal" data-bs-target="#reviewModal{{donation.id}}">
+                        Read Review
+                    </button>
+                {% else %}
+                    <span class="card-footer-text">Waiting for the Donor to leave a review.</span>
+                {% endif %}
+            </div>
+            <div>
+                {% if donation.has_review_by_me %}
+                    <button class="btn btn-outline-secondary btn-sm" disabled>You Already Reviewed</button>
+                {% else %}
+                    <a href="{% url 'add_review' donation.id %}" class="btn btn-outline-primary btn-sm">Leave a Review</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if donation.review_for_me %}
+    <div class="modal fade" id="reviewModal{{donation.id}}" tabindex="-1" aria-labelledby="reviewModalLabel{{donation.id}}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel{{donation.id}}">Review from {{ donation.donor.username }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="star-rating">
+                        {% for i in "12345"|make_list %}
+                            {% if i|add:0 <= donation.review_for_me.rating %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                    </h5>
+                    <p class="mt-3">
+                        {% if donation.review_for_me.comment %}
+                            "{{ donation.review_for_me.comment }}"
+                        {% else %}
+                            <em class="text-muted">The user did not leave a written comment.</em>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% empty %}
+    <div class="card p-4 text-center">
+        <p class="lead">You have not claimed any donations yet.</p>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
