@@ -2,13 +2,13 @@
 {% block content %}
 <style>
     .donation-card-body {
-        font-size: 1rem; 
+        font-size: 1rem;
     }
     .donation-card-body p {
-        margin-bottom: 0.75rem; 
+        margin-bottom: 0.75rem;
     }
     .card-footer-text {
-        font-size: 0.9rem; 
+        font-size: 0.9rem;
         color: #6c757d;
     }
     .star-rating {
@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-md-6">
                     <p>
-                        <strong>Status:</strong> 
+                        <strong>Status:</strong>
                         {% if donation.status == 'available' %}
                             <span class="badge bg-success fs-6">Available</span>
                         {% elif donation.status == 'claimed' %}
@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>
-        
+
         {% if donation.status == 'claimed' %}
         <div class="card-footer bg-white text-end">
             <a href="{% url 'complete_donation' donation.id %}" class="btn btn-info btn-sm">Mark as Completed</a>
@@ -94,7 +94,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="reviewModalLabel{{donation.id}}">Review from {{ donation.claimed_by.username }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <h5 class="star-rating">

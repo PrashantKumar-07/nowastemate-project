@@ -40,25 +40,37 @@
                 <div class="card-body p-4">
                     <i class="fas fa-hands-helping fa-3x text-primary mb-3"></i>
                     <h5 class="card-title">Donations Completed</h5>
-                    <p class="display-4 fw-bold">{{ total_donations }}</p>
+
+                    <!-- ✅ Added ID for Selenium -->
+                    <p class="display-4 fw-bold" id="total_donations">{{ total_donations }}</p>
+                    <!-- END FIX -->
                 </div>
             </div>
         </div>
+
         <div class="col-md-4">
             <div class="card text-center stat-card h-100">
                 <div class="card-body p-4">
                     <i class="fas fa-store fa-3x text-success mb-3"></i>
                     <h5 class="card-title">Verified NGOs</h5>
+
+                    <!-- (NGOs count, not used by test, left unchanged) -->
                     <p class="display-4 fw-bold">{{ total_ngos }}</p>
+
                 </div>
             </div>
         </div>
+
         <div class="col-md-4">
             <div class="card text-center stat-card h-100">
                 <div class="card-body p-4">
                     <i class="fas fa-users fa-3x text-info mb-3"></i>
                     <h5 class="card-title">Registered Donors</h5>
-                    <p class="display-4 fw-bold">{{ total_donors }}</p>
+
+                    <!-- ✅ Added ID for Selenium -->
+                    <p class="display-4 fw-bold" id="total_donors">{{ total_donors }}</p>
+                    <!-- END FIX -->
+
                 </div>
             </div>
         </div>
@@ -70,11 +82,16 @@
                 <div class="card-body p-4">
                     <i class="fas fa-star fa-3x star-rating mb-3"></i>
                     <h5 class="card-title">"Trusted" Donor Rating</h5>
-                    <p class="display-4 fw-bold">{{ avg_donor_rating|floatformat:1 }}</p>
+
+                    <!-- ✅ Added ID for Selenium -->
+                    <p class="display-4 fw-bold" id="avg_donor_rating">{{ avg_donor_rating|floatformat:1 }}</p>
+                    <!-- END FIX -->
+
                     <p class="card-subtitle-text">(Avg. for members with {{ min_reviews_for_rating }}+ reviews)</p>
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="card text-center stat-card h-100">
                 <div class="card-body p-4">
@@ -96,6 +113,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="card stat-card">
                 <div class="card-body p-4">
@@ -105,13 +123,11 @@
             </div>
         </div>
     </div>
-    
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
-       
+
         const topDonorsData = {
             labels: {{ donor_labels|safe }},
             datasets: [{
@@ -125,15 +141,14 @@
             type: 'bar',
             data: topDonorsData,
             options: {
-                indexAxis: 'y', 
-                scales: { 
+                indexAxis: 'y',
+                scales: {
                     x: { beginAtZero: true, ticks: { precision: 0 } }
                 },
                 plugins: { legend: { display: false } }
             }
         });
-        
-        
+
         const timeData = {
             labels: {{ time_labels|safe }},
             datasets: [{

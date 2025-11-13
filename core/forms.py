@@ -1,7 +1,7 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth.models import User
-from django import forms
+
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
@@ -18,24 +18,13 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.TextInput(attrs={
             'type': 'tel',
             'pattern': '[0-9]{10}',
-            'title': 'Please enter a 10-digit mobile number.',
-            'placeholder': '10-Digit Phone Number'
-            'title': 'Please enter a 10-digit mobile number.',
-            'placeholder': '10-Digit Phone Number'
+            'placeholder': '10-Digit Phone Number',
         })
     )
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields + ('email', 'phone_number',)
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email address is already in use.")
-        return email
-        model = User
-        fields = UserCreationForm.Meta.fields + ('email', 'phone_number',)
+        fields = UserCreationForm.Meta.fields + ('email', 'phone_number')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -45,8 +34,6 @@ class CustomUserCreationForm(UserCreationForm):
 
     def clean_phone_number(self):
         phone = self.cleaned_data.get('phone_number')
-        if not phone.isdigit():
-            raise forms.ValidationError("Phone number must contain only digits.")
-        if len(phone) != 10:
+        if not phone.isdigit() or len(phone) != 10:
             raise forms.ValidationError("Phone number must be 10 digits long.")
         return phone

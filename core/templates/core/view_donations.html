@@ -1,35 +1,11 @@
 {% extends 'core/base.html' %}
 {% block content %}
 <style>
-    .donation-card {
-        border: 1px solid #dee2e6;
-        border-radius: .75rem;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-    }
-    .donation-card:hover {
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        transform: translateY(-5px);
-    }
-    .card-header-tag {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-    .donor-info {
-        background-color: #f8f9fa;
-        padding: 10px 20px;
-        border-top: 1px solid #dee2e6;
-        margin-top: auto;
-    }
-    .star-rating {
-        color: #ffc107;
-    }
+.donation-card {border:1px solid #dee2e6;border-radius:.75rem;overflow:hidden;transition:.3s;background:#fff;display:flex;flex-direction:column;}
+.donation-card:hover {box-shadow:0 8px 25px rgba(0,0,0,0.1);transform:translateY(-5px);}
+.card-header-tag {position:absolute;top:15px;right:15px;font-size:.8rem;font-weight:600;}
+.donor-info {background:#f8f9fa;padding:10px 20px;border-top:1px solid #dee2e6;margin-top:auto;}
+.star-rating {color:#ffc107;}
 </style>
 
 <div class="container my-5">
@@ -43,29 +19,27 @@
                     <span class="badge bg-primary card-header-tag">{{ donation.get_category_display }}</span>
                     <h4 class="card-title fw-bold mb-3">{{ donation.food_item }}</h4>
                     <ul class="list-unstyled text-muted mb-4">
-                        <li class="mb-2"><i class="fas fa-box-open me-2 text-primary"></i> <strong>Quantity:</strong> {{ donation.quantity }}</li>
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-primary"></i> <strong>Location:</strong> {{ donation.pickup_location }}</li>
-                        <li class="mb-2"><i class="fas fa-clock me-2 text-danger"></i> <strong>Pickup By:</strong> {{ donation.pickup_by|date:"D, M j, g:i A" }}</li>
-                        <li class="mb-2"><i class="fas fa-calendar-alt me-2 text-primary"></i> <strong>Posted:</strong> {{ donation.created_at|date:"d M Y" }}</li>
-                        
-                        <li class="mb-2"><i class="fas fa-phone me-2 text-primary"></i> <strong>Contact:</strong> {{ donation.donor.userprofile.phone_number }}</li>
+                        <li class="mb-2"><strong>Quantity:</strong> {{ donation.quantity }}</li>
+                        <li class="mb-2"><strong>Location:</strong> {{ donation.pickup_location }}</li>
+                        <li class="mb-2"><strong>Pickup By:</strong> {{ donation.pickup_by|date:"D, M j, g:i A" }}</li>
+                        <li class="mb-2"><strong>Posted:</strong> {{ donation.created_at|date:"d M Y" }}</li>
+                        <li class="mb-2"><strong>Contact:</strong> {{ donation.donor.userprofile.phone_number }}</li>
                     </ul>
-                    <a href="{% url 'claim_donation' donation.id %}" class="btn btn-primary w-100">Claim This Donation</a>
+
+                    <a href="/claim-donation/{{ donation.id }}/" class="btn btn-primary w-100">Claim This Donation</a>
                 </div>
+
                 <div class="donor-info">
                     <strong>Donor:</strong> {{ donation.donor.username }}
                     <span class="star-rating float-end">
-                        <i class="fas fa-star"></i>
-                        <strong>{{ donation.donor.userprofile.average_rating|floatformat:1 }}</strong>
+                        ★ {{ donation.donor.userprofile.average_rating|floatformat:1 }}
                     </span>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12">
-            <div class="alert alert-info text-center">
-                <p class="lead mb-0">There are no available donations at this time. Please check back later.</p>
-            </div>
+            <div class="alert alert-info text-center">No available donations right now.</div>
         </div>
         {% endfor %}
     </div>

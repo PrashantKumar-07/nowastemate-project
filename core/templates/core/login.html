@@ -13,8 +13,6 @@
         overflow: hidden;
         border: none;
     }
-    
-    /* THIS IS THE NEW VISUAL STYLE YOU REQUESTED */
     .login-visual {
         background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1710093072228-8c3129f27357?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070');
         background-size: cover;
@@ -29,8 +27,6 @@
         font-weight: 700;
         font-size: 2.5rem;
     }
-    /* END OF NEW VISUAL STYLE */
-
     .login-form-wrapper {
         padding: 50px;
     }
@@ -67,31 +63,42 @@
         cursor: pointer;
     }
 </style>
+
 <div class="login-container">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card login-card">
                     <div class="row g-0">
-                        
-                        <!-- THIS IS THE MODIFIED VISUAL BLOCK -->
                         <div class="col-lg-5 login-visual d-none d-lg-flex">
                             <div>
                                 <h2 class="fw-bold mb-3">Make a Difference Today</h2>
                                 <p class="text-center">Join our community of donors and NGOs working together to reduce food waste and fight hunger.</p>
                             </div>
                         </div>
-                        <!-- END OF MODIFIED BLOCK -->
-
                         <div class="col-lg-7">
                             <div class="login-form-wrapper">
+
+                                {% if messages %}
+                                    <div class="messages-container mb-3">
+                                        {% for message in messages %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                {{ message }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
                                 <h1 class="fw-bold text-center mb-4">Login</h1>
+
                                 <form method="post" novalidate>
                                     {% csrf_token %}
                                     <div class="form-group-custom">
                                         <i class="fas fa-user form-icon"></i>
                                         <input type="text" class="form-control form-control-custom" id="id_username" name="username" placeholder="Username" required>
                                     </div>
+
                                     <div class="form-group-custom">
                                         <i class="fas fa-lock form-icon"></i>
                                         <input type="password" class="form-control form-control-custom" id="id_password" name="password" placeholder="Password" required>
@@ -99,15 +106,19 @@
                                     </div>
 
                                     {% for error in form.non_field_errors %}
-                                    <div class="alert alert-danger p-2">{{ error }}</div>
+                                        <div class="alert alert-danger p-2">{{ error }}</div>
                                     {% endfor %}
 
                                     <div class="d-grid mt-4">
                                         <button type="submit" class="btn btn-primary btn-lg">Login</button>
                                     </div>
+
                                     <hr class="my-4">
-                                    <p class="text-center mb-0">Don't have an account? <a href="{% url 'home' %}#selection-area">Register Here</a></p>
+                                    <p class="text-center mb-0">
+                                        Don't have an account? <a href="{% url 'home' %}#selection-area">Register Here</a>
+                                    </p>
                                 </form>
+
                             </div>
                         </div>
                     </div>
@@ -116,11 +127,12 @@
         </div>
     </div>
 </div>
+
 <script>
     const toggleButton = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('id_password');
     if (toggleButton && passwordInput) {
-        toggleButton.addEventListener('click', function (e) {
+        toggleButton.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             if (type === 'password') {
@@ -133,4 +145,5 @@
         });
     }
 </script>
+
 {% endblock %}

@@ -44,7 +44,7 @@ class UserProfileAdmin(admin.ModelAdmin):
                 user_subject = "Your NoWasteMate Account is Approved!"
                 user_message = f"Hi {user.username},\n\nGood news! Your account on NoWasteMate has been approved."
                 send_mail(
-                    subject=subject,
+                    subject=user_subject,
                     message=user_message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[user.email],
