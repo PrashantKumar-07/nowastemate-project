@@ -56,7 +56,6 @@ class TestE2EWorkflows(StaticLiveServerTestCase):
         self.driver.find_element(By.NAME, "username").send_keys("testdonor")
         self.driver.find_element(By.NAME, "password").send_keys("wrongpassword")
         self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
-
         alert = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".alert-danger"))
         )
@@ -73,12 +72,10 @@ class TestE2EWorkflows(StaticLiveServerTestCase):
             phone_number='3333333333',
             is_approved=False
         )
-
         self.driver.get(f"{self.live_server_url}/login/")
         self.driver.find_element(By.NAME, "username").send_keys("newuser")
         self.driver.find_element(By.NAME, "password").send_keys("testpass123")
         self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
-
         alert = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".alert-danger"))
         )
@@ -126,3 +123,41 @@ class TestE2EWorkflows(StaticLiveServerTestCase):
         self.assertEqual(total_donations, expected_total_donations)
         self.assertEqual(total_donors, expected_total_donors)
         self.assertEqual(avg_donor_rating, expected_avg)
+
+    def test_full_donation_claim_flow(self):
+        self.driver.get(f"{self.live_server_url}/login/")
+        self.driver.find_element(By.NAME, "username").send_keys("testdonor")
+        self.driver.find_element(By.NAME, "password").send_keys("testpass123")
+        self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        post_btn = self.driver.find_element(By.CSS_SELECTOR, "a[href='/donate/']")
+        post_btn.click()
+
+        food_item = "Automation Test Food"
+        self.driver.find_element(By.ID, "food_item").send_keys(food_item)
+        self.driver.find_element(By.ID, "category").send_keys("produce")
+        self.driver.find_element(By.ID, "quantity").send_keys("10 kg")
+        self.driver.find_element(By.ID, "pickup_location").send_keys("Auto City")
+
+        element = self.driver.find_element(By.ID, "pickup_by")
+        self.driver.execute_script("arguments[0].value = '2030-01-01T12:00';", element)
+
+        self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        self.assertIn(food_item, self.driver.page_source)
+
+        self.driver.find_element(By.CSS_SELECTOR, "a[href='/logout/']").click()
+
+        self.driver.get(f"{self.live_server_url}/login/")
+        self.driver.find_element(By.NAME, "username").send_keys("testngo")
+        self.driver.find_element(By.NAME, "password").send_keys("testpass123")
+        self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        self.driver.find_element(By.CSS_SELECTOR, "a[href='/donations/']").click()
+
+        claim_button = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "a[href*='/claim-donation/']"))
+        )
+        claim_button.click()
+
+        self.assertIn("Claimed", self.driver.page_source)
